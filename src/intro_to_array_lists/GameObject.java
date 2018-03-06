@@ -7,6 +7,7 @@ public class GameObject {
 	int y;
 	int width;
 	int height;
+	boolean isAlive = true;
 	GameObject(int x, int y, int width, int height){
 		this.x = x;
 		this.y = y;
@@ -14,10 +15,7 @@ public class GameObject {
 		this.height = height;
 	}
 	void update() {
-	x+=20;
-	y+=20;
 	}
 	void draw(Graphics g) {
-		g.fillRect(x, y, 100, 100);
 	}
 }

@@ -1,4 +1,4 @@
-package intro_to_array_lists;
+package intro_stuff;
 
 import java.util.ArrayList;
 

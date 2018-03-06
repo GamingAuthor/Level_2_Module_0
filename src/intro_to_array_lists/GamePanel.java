@@ -18,7 +18,14 @@ final int MENU_STATE = 0;
 final int GAME_STATE = 1;
 final int END_STATE = 2;
 int currentState = MENU_STATE;
-Font titleFont = new Font("Arial", Font.PLAIN,48);
+Font titleFont = new Font("Arial",Font.BOLD,48);
+Font enterFont = new Font("Arial", Font.ITALIC,24);
+Font instructionFont = new Font("Arial", Font.PLAIN, 24);
+Font overFont = new Font("Arial",Font.BOLD,48);
+Font killFont = new Font("Arial",Font.ITALIC,24);
+Font restartFont = new Font("Arial",Font.PLAIN,24);
+Rocketship shippo = new Rocketship(250,700,50,50);
+ObjectManager manager = new ObjectManager(shippo);
 void startGame() {	
 	timer.start();
 }
@@ -29,7 +36,7 @@ void updateMenuState() {
 	
 }
 void updateGameState() {
-	
+	manager.update();
 }
 void updateEndState() {
 	
@@ -38,16 +45,35 @@ void drawMenuState(Graphics g) {
 	g.setColor(Color.BLUE);
 	g.fillRect(0, 0, LeagueInvaders.width, LeagueInvaders.height);
 	g.setFont(titleFont);
-	g.drawString("Title", 10, 10);
-	
+	g.setColor(Color.YELLOW);
+	titleFont.isBold();
+	g.drawString("LEAGUE INVADERS", 20, 100);
+	g.setFont(enterFont);
+	g.setColor(Color.YELLOW);
+	enterFont.isItalic();
+	g.drawString("Press ENTER to play!", 125, 400);
+	g.setFont(instructionFont);
+	g.setColor(Color.YELLOW);
+	g.drawString("Press SPACE for instructions", 90, 700);
 }
 void drawGameState(Graphics g) {
 	g.setColor(Color.BLACK);
 	g.fillRect(0, 0, LeagueInvaders.width, LeagueInvaders.height);
+	manager.draw(g);
+
 }
 void drawEndState(Graphics g) {
 	g.setColor(Color.RED);
 	g.fillRect(0, 0, LeagueInvaders.width, LeagueInvaders.height);
+	g.setFont(overFont);
+	g.setColor(Color.GREEN);
+	g.drawString("GAME OVER!", 85, 100);
+	g.setFont(killFont);
+	g.setColor(Color.GREEN);
+	g.drawString("You killed 0 enemies", 125, 400);
+	g.setFont(restartFont);
+	g.setColor(Color.GREEN);
+	g.drawString("Press ENTER to restart", 110, 700);
 }
 @Override
 public void actionPerformed(ActionEvent e) {
@@ -90,12 +116,26 @@ public void keyPressed(KeyEvent e) {
 			currentState = MENU_STATE;
 		}
 	}
-
+	if(e.getKeyCode()==(KeyEvent.VK_RIGHT)) {
+		shippo.x+=shippo.speed;
+	}
+	if(e.getKeyCode()==(KeyEvent.VK_UP)) {
+		shippo.y-=shippo.speed;
+	}
+	if(e.getKeyCode()==(KeyEvent.VK_DOWN)) {
+		shippo.y+=shippo.speed;
+	}
+	if(e.getKeyCode()==(KeyEvent.VK_LEFT)){
+		shippo.x-=shippo.speed;
+	}
+	if(e.getKeyCode()==(KeyEvent.VK_SPACE)) {
+		manager.addProjectile(new Projectile(shippo.x+21, shippo.y, 10, 10));
+	}
 }
 
 @Override
 public void keyReleased(KeyEvent e) {
 	// TODO Auto-generated method stub
-	System.out.println("release");
+	
 }
 }

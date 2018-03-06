@@ -1,4 +1,4 @@
-package intro_to_array_lists;
+package intro_stuff;
 
 public class IntroToArrayLists {
 	public static void main(String[] args) {
