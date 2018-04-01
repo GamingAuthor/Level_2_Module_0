@@ -17,6 +17,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	final int END_STATE = 2;
 	final int INSTRUCTION_STATE = 3;
 	int currentState = MENU_STATE;
+	Plane plan = new Plane(250, , 50, 50);
 	Font titleFont = new Font("Arial", Font.BOLD, 48);
 	Font enterFont = new Font("Arial", Font.ITALIC, 24);
 	Font instructionFont = new Font("Arial", Font.PLAIN, 20);

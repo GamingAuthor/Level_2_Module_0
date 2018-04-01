@@ -20,13 +20,13 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	final int GAME_STATE = 1;
 	final int END_STATE = 2;
 	int currentState = MENU_STATE;
+	Rocketship shippo = new Rocketship(250,700,50,50);
 	Font titleFont = new Font("Arial", Font.BOLD, 48);
 	Font enterFont = new Font("Arial", Font.ITALIC, 24);
 	Font instructionFont = new Font("Arial", Font.PLAIN, 24);
 	Font overFont = new Font("Arial", Font.BOLD, 48);
 	Font killFont = new Font("Arial", Font.ITALIC, 24);
 	Font restartFont = new Font("Arial", Font.PLAIN, 24);
-	Rocketship shippo = new Rocketship(250, 700, 50, 50);
 	ObjectManager manager = new ObjectManager(shippo);
 	public static BufferedImage alienImg;
 	public static BufferedImage rocketImg;
