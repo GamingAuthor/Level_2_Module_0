@@ -10,32 +10,48 @@ import java.awt.event.KeyListener;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class GamePanel extends JPanel implements ActionListener, KeyListener{
-	Timer timer = new Timer(1000/60, this);
+public class GamePanel extends JPanel implements ActionListener, KeyListener {
+	Timer timer = new Timer(1000 / 60, this);
 	final int MENU_STATE = 0;
 	final int GAME_STATE = 1;
 	final int END_STATE = 2;
 	final int INSTRUCTION_STATE = 3;
 	int currentState = MENU_STATE;
-	Plane plan = new Plane(250, , 50, 50);
+	Plane plan = new Plane(25, 225, 50, 50);
 	Font titleFont = new Font("Arial", Font.BOLD, 48);
 	Font enterFont = new Font("Arial", Font.ITALIC, 24);
 	Font instructionFont = new Font("Arial", Font.PLAIN, 20);
 	Font overFont = new Font("Arial", Font.BOLD, 48);
 	Font restartFont = new Font("Arial", Font.ITALIC, 24);
 	Font awayFont = new Font("Arial", Font.PLAIN, 20);
-	Color sky = new Color(147,221,255);
-	Color death = new Color(255,96,96);
-	
+	Color sky = new Color(147, 221, 255);
+	Color death = new Color(255, 96, 96);
+	Color manual = new Color(195,255,183);
+	ObjectManager manager = new ObjectManager(plan);
+
 	void startGame() {
 		timer.start();
 	}
+
 	void updateMenuState() {
 	}
+
 	void updateGameState() {
+		manager.update();
+		manager.manageEnemies();
+		manager.purgeObjects();
+		
+		if(!manager.mantis.isAlive) {
+			currentState=END_STATE;
+		}
 	}
+
 	void updateEndState() {
 	}
+	void updateInstructionState() {
+		
+	}
+
 	void drawMenuState(Graphics g) {
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, AirTime.width, AirTime.height);
@@ -55,6 +71,17 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	void drawGameState(Graphics g) {
 		g.setColor(sky);
 		g.fillRect(0, 0, AirTime.width, AirTime.height);
+		g.setColor(Color.BLACK);
+		g.drawRect(0, 0, 100, 100);
+		g.setColor(Color.BLACK);
+		g.drawRect(0, 100, 100, 100);
+		g.setColor(Color.BLACK);
+		g.drawRect(0, 200, 100, 100);
+		g.setColor(Color.BLACK);
+		g.drawRect(0, 300, 100, 100);
+		g.setColor(Color.BLACK);
+		g.drawRect(0, 400, 100, 99);
+		manager.draw(g);
 	}
 
 	void drawEndState(Graphics g) {
@@ -70,12 +97,17 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 		g.drawString("Press ENTER to restart.", 350, 400);
 		g.setFont(awayFont);
 		g.setColor(Color.BLACK);
-		g.drawString("You were 5 hours away from Canada.", 200,250);
+		g.drawString("You were 5 hours away from Canada.", 200, 250);
 	}
+	void drawInstructionState(Graphics g) {
+		g.setColor(manual);
+		g.fillRect(0, 0, AirTime.width, AirTime.height);
+	}
+
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -89,13 +121,46 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 			} else if (currentState == END_STATE) {
 				currentState = MENU_STATE;
 			}
+		} else if (e.getKeyCode() == (KeyEvent.VK_UP)) {
+			if (manager.mantis.y == 25) {
+
+			} else if (manager.mantis.y == 125) {
+				manager.mantis.y = 25;
+			} else if (manager.mantis.y == 225) {
+				manager.mantis.y = 125;
+			} else if (manager.mantis.y == 325) {
+				manager.mantis.y = 225;
+			} else if (manager.mantis.y == 425) {
+				manager.mantis.y = 325;
+			}
+		} else if(e.getKeyCode() == (KeyEvent.VK_DOWN)) {
+			if(manager.mantis.y==25) {
+				manager.mantis.y=125;
+			}else if(manager.mantis.y==125) {
+				manager.mantis.y=225;
+			}else if(manager.mantis.y==225) {
+				manager.mantis.y=325;
+			}else if(manager.mantis.y==325) {
+				manager.mantis.y=425;
+			}else if(manager.mantis.y==425) {
+				
+			}
+		}
+		if(currentState==MENU_STATE) {
+			if(e.getKeyCode() == (KeyEvent.VK_SPACE)) {
+				currentState=INSTRUCTION_STATE;
+			}
+		} else if(currentState==INSTRUCTION_STATE) {
+			if(e.getKeyCode() == (KeyEvent.VK_SPACE)) {
+				currentState=MENU_STATE;
+			}
 		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -107,6 +172,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 			updateGameState();
 		} else if (currentState == END_STATE) {
 			updateEndState();
+		} else if (currentState == INSTRUCTION_STATE) {
+			updateInstructionState();
 		}
 		repaint();
 	}
@@ -119,9 +186,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 			drawGameState(g);
 		} else if (currentState == END_STATE) {
 			drawEndState(g);
+		} else if (currentState == INSTRUCTION_STATE) {
+			drawInstructionState(g);
 		}
 	}
 
-	}
-
-
+}
