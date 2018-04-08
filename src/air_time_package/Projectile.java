@@ -3,15 +3,15 @@ package air_time_package;
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class PowerUp extends GameObject{
+public class Projectile extends GameObject {
 
-	PowerUp(int x, int y, int width, int height) {
+	Projectile(int x, int y, int width, int height) {
 		super(x, y, width, height);
 	}
 	void update() {
 		super.update();
-		x-=2;
-		if(x<-50) {
+		x+=4;
+		if(x>810) {
 		isAlive = false;
 		}
 	}
@@ -19,4 +19,4 @@ public class PowerUp extends GameObject{
 		g.setColor(Color.RED);
 		g.fillRect(x, y, width, height);
 	}
-}
+	}
