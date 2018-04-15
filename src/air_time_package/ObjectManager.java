@@ -9,7 +9,7 @@ public class ObjectManager {
 	ArrayList<Zombie> zombo = new ArrayList<Zombie>();
 	ArrayList<PowerUp> power = new ArrayList<PowerUp>();
 	ArrayList<Projectile> project = new ArrayList<Projectile>();
-	int hours = 3;
+	static int hours;
 	long enemyTimer = 0;
 	int enemySpawnTime = 2000;
 	long powerTimer = 0;
@@ -66,16 +66,20 @@ public class ObjectManager {
 			enemySpawnTime = 1000;
 		} else if(hours == 2) {
 			enemySpawnTime = 500;
-			powerSpawnTime = 2000;
+			powerSpawnTime = 5000;
 		}
 		
 		if (System.currentTimeMillis() - enemyTimer >= enemySpawnTime) {
-			addZombie(new Zombie(800, (new Random().nextInt(5) * 100) + 25, 50, 50));
+			addZombie(new Zombie(800, (new Random().nextInt(5) * 100) + 32, 50, 25));
 			enemyTimer = System.currentTimeMillis();
 		}
 		if(hours<5) {
 		if (System.currentTimeMillis() - powerTimer >= powerSpawnTime) {
-			addPowerUp(new PowerUp(800, (new Random().nextInt(5) * 100) + 35, 25, 25));
+			if(hours>2) {
+			addPowerUp(new PowerUp(800, (new Random().nextInt(5) * 100) + 25, 50, 50));
+			} else if(hours<=2) {
+			addPowerUp(new PowerUp(800, (new Random().nextInt(5) * 100) + 25, 35, 50));
+			}
 			powerTimer = System.currentTimeMillis();
 		}
 		}
@@ -113,7 +117,7 @@ public class ObjectManager {
 			} else {
 				for (Projectile alia : project) {
 					if (alia.collisionBox.intersects(bill.collisionBox)) {
-						if(hours>=2) {
+						if(hours>2) {
 						alia.isAlive = false;
 						}
 						bill.isAlive = false;

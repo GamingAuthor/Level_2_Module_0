@@ -7,6 +7,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -29,13 +33,33 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	Font hourFont = new Font("Arial", Font.BOLD, 20);
 	Font winFont = new Font("Arial", Font.BOLD, 48);
 	Font youFont = new Font("Arial", Font.ITALIC, 24);
-	Font againFont = new Font("Arial", Font.PLAIN, 20);
 	Color sky = new Color(147, 221, 255);
 	Color death = new Color(255, 96, 96);
 	Color manual = new Color(195,255,183);
 	Color dusk = new Color(255,186,102);
 	Color night = new Color(119,119,255);
 	ObjectManager manager = new ObjectManager(plan);
+	public static BufferedImage planeImg;
+	public static BufferedImage zombieImg;
+	public static BufferedImage bulletImg;
+	public static BufferedImage powerupImg;
+	public static BufferedImage jalapenoImg;
+	public static BufferedImage fireImg;
+	
+	GamePanel(){
+		try {
+			planeImg = ImageIO.read(this.getClass().getResourceAsStream("plane.png"));
+			zombieImg = ImageIO.read(this.getClass().getResourceAsStream("zombie.png"));
+			bulletImg = ImageIO.read(this.getClass().getResourceAsStream("projectile.png"));
+			powerupImg = ImageIO.read(this.getClass().getResourceAsStream("powerup.png"));
+			jalapenoImg = ImageIO.read(this.getClass().getResourceAsStream("jalapeno.png"));
+			fireImg = ImageIO.read(this.getClass().getResourceAsStream("fire.png"));
+		
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	}
 
 	void startGame() {
 		timer.start();
@@ -59,6 +83,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	void updateEndState() {
 	}
 	void updateInstructionState() {
+	}
+	void updateWinState() {
+		
 	}
 	void drawMenuState(Graphics g) {
 		g.setColor(Color.BLACK);
@@ -127,8 +154,13 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		g.setColor(Color.BLUE);
 		g.fillRect(0, 0, AirTime.width, AirTime.height);
 		g.setColor(Color.YELLOW);
-		g.drawString("YOU WIN!", 100, 100);
 		g.setFont(winFont);
+		winFont.isBold();
+		g.drawString("YOU WIN!", 100, 100);
+		g.setColor(Color.YELLOW);
+		g.setFont(youFont);
+		youFont.isItalic();
+		g.drawString("Press ENTER to play again!", 350, 400);
 	}
 
 	@Override
@@ -143,10 +175,12 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		if (e.getKeyCode() == (KeyEvent.VK_ENTER)) {
 			if (currentState == MENU_STATE) {
 				currentState = GAME_STATE;
-			} else if (currentState == GAME_STATE) {
-				currentState = END_STATE;
+				manager.hours=2;
 			} else if (currentState == END_STATE) {
 				manager = new ObjectManager(new Plane(25, 225, 50, 50));
+				currentState = MENU_STATE;
+			} else if (currentState == WIN_STATE) {
+				manager = new ObjectManager(new Plane(25,225,50,50));
 				currentState = MENU_STATE;
 			}
 		} else if (e.getKeyCode() == (KeyEvent.VK_UP)) {
@@ -176,7 +210,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		} else if(e.getKeyCode()==(KeyEvent.VK_SPACE)) {
 			if(currentState==GAME_STATE) {
 				if(manager.projectileCounter>0) {
-					manager.addProjectile(new Projectile(manager.mantis.x + 21, manager.mantis.y +21, 10, 10));
+					manager.addProjectile(new Projectile(manager.mantis.x + 21, manager.mantis.y +10, 25, 25));
 					manager.projectileCounter--;
 				}
 			}
@@ -209,6 +243,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 			updateEndState();
 		} else if (currentState == INSTRUCTION_STATE) {
 			updateInstructionState();
+		} else if (currentState == WIN_STATE) {
+			updateWinState();
 		}
 		repaint();
 	}
@@ -223,6 +259,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 			drawEndState(g);
 		} else if (currentState == INSTRUCTION_STATE) {
 			drawInstructionState(g);
+		} else if (currentState == WIN_STATE) {
+			drawWinState(g);
 		}
 	}
 

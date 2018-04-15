@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 public class Zombie extends GameObject {
-	ObjectManager manger = new ObjectManager(null);
 
 	Zombie(int x, int y, int width, int height) {
 		super(x, y, width, height);
@@ -12,13 +11,13 @@ public class Zombie extends GameObject {
 
 	void update() {
 		super.update();
-		if (manger.hours > 2) {
+		if (ObjectManager.hours > 2) {
 			x--;
 		}
-		if (manger.hours == 2) {
+		if (ObjectManager.hours == 2) {
 			x -= 2;
 		}
-		if (manger.hours == 1) {
+		if (ObjectManager.hours == 1) {
 			x -= 3;
 		}
 		if (x < -50) {
@@ -28,6 +27,6 @@ public class Zombie extends GameObject {
 
 	void draw(Graphics g) {
 		g.setColor(Color.GREEN);
-		g.fillRect(x, y, width, height);
+		g.drawImage(GamePanel.zombieImg, x, y, width, height, null);
 	}
 }
