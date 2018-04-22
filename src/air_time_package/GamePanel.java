@@ -14,6 +14,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+
+
 public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	Timer timer = new Timer(1000 / 60, this);
 	final int MENU_STATE = 0;
@@ -33,6 +35,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	Font hourFont = new Font("Arial", Font.BOLD, 20);
 	Font winFont = new Font("Arial", Font.BOLD, 48);
 	Font youFont = new Font("Arial", Font.ITALIC, 24);
+	Font controlFont = new Font("Arial", Font.PLAIN, 24);
 	Color sky = new Color(147, 221, 255);
 	Color death = new Color(255, 96, 96);
 	Color manual = new Color(195,255,183);
@@ -45,6 +48,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	public static BufferedImage powerupImg;
 	public static BufferedImage jalapenoImg;
 	public static BufferedImage fireImg;
+
 	
 	GamePanel(){
 		try {
@@ -63,8 +67,20 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
 	void startGame() {
 		timer.start();
+		songPlay();
 	}
-
+	void songPlay() {
+		if(currentState==GAME_STATE) {
+			manager.gamersong.play();
+		} else {
+			manager.gamersong.stop();
+		}
+		if(currentState==MENU_STATE) {
+			manager.main.play();
+		} else {
+			manager.main.stop();
+		}
+	}
 	void updateMenuState() {
 	}
 
@@ -76,8 +92,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		manager.keepTime();
 		if(!manager.mantis.isAlive) {
 			currentState=END_STATE;
+			manager.gamersong.stop();
 		} else if(!manager.mantis.isAlive && manager.hours==0) {
 			currentState=WIN_STATE;
+			manager.gamersong.stop();
 		}
 	}
 	void updateEndState() {
@@ -149,6 +167,16 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	void drawInstructionState(Graphics g) {
 		g.setColor(manual);
 		g.fillRect(0, 0, AirTime.width, AirTime.height);
+		g.setFont(controlFont);
+		g.setColor(Color.RED);
+		g.drawString("Use the UP and DOWN arrow keys to navigate the lanes.", 85, 50);
+		g.drawString("Press SPACE to shoot projectiles when you have them.", 85, 75);
+		g.drawImage(zombieImg, 1, 75, null);
+		g.drawString("Avoid the zombies!", 150, 175);
+		g.drawImage(powerupImg, 45, 175, null);
+		g.drawString("Grab these Power-Ups to shoot projectiles!", 200, 300);
+		g.drawImage(jalapenoImg, 65, 325, 75, 150, null);
+		g.drawString("When this shows up, your projectiles will be more powerful!", 125, 450);
 	}
 	void drawWinState(Graphics g) {
 		g.setColor(Color.BLUE);
@@ -175,7 +203,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		if (e.getKeyCode() == (KeyEvent.VK_ENTER)) {
 			if (currentState == MENU_STATE) {
 				currentState = GAME_STATE;
-				manager.hours=2;
+				songPlay();
+				manager.hours=6;
 			} else if (currentState == END_STATE) {
 				manager = new ObjectManager(new Plane(25, 225, 50, 50));
 				currentState = MENU_STATE;
@@ -239,6 +268,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 			updateMenuState();
 		} else if (currentState == GAME_STATE) {
 			updateGameState();
+			if(manager.hours==0) {
+			currentState=WIN_STATE;
+			}
 		} else if (currentState == END_STATE) {
 			updateEndState();
 		} else if (currentState == INSTRUCTION_STATE) {
