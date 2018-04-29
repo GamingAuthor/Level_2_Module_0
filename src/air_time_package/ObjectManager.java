@@ -3,11 +3,6 @@ package air_time_package;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Random;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.net.URL;
-import javazoom.jl.player.advanced.AdvancedPlayer;
 
 public class ObjectManager {
 	Plane mantis;
@@ -21,12 +16,15 @@ public class ObjectManager {
 	int powerSpawnTime = 10000;
 	long hourTimer = 0;
 	int projectileCounter = 0;
-	Song gamersong = new Song("UltimateBattle.mp3");
-	Song subaluwa = new Song("Subaluwa.mp3");
-	Song oneup = new Song("1up.mp3");
-	Song fire = new Song("Ignite.ogx");
-	Song hit = new Song("Ignite.ogx");
-	Song main = new Song("Canada.mp3");
+	static Song gamersong = new Song("UltimateBattle.mp3");
+	static Song subaluwa = new Song("Subaluwa.mp3");
+	static Song oneup = new Song("1up.mp3");
+	static Song fire = new Song("fire.mp3");
+	static Song firefire = new Song("firefire.mp3");
+	static Song hit = new Song("oof.mp3");
+	static Song main = new Song("Canada.mp3");
+	static Song over = new Song("game over.mp3");
+	static Song winner = new Song("winner.mp3");
 
 	ObjectManager(Plane plane) {
 		this.mantis = plane;
@@ -98,7 +96,7 @@ public class ObjectManager {
 		}
 	}
 	void keepTime() {
-		if(System.currentTimeMillis() - hourTimer >= 24000) {
+		if(System.currentTimeMillis() - hourTimer >= 23000) {
 			System.out.println("YAY!");
 			hourTimer = System.currentTimeMillis();
 			hours--;
@@ -134,6 +132,7 @@ public class ObjectManager {
 						alia.isAlive = false;
 						}
 						bill.isAlive = false;
+						hit.play();
 					}
 				}
 			}
@@ -147,90 +146,6 @@ public class ObjectManager {
 				}
 				yeet.isAlive = false;
 				projectileCounter++;
-			}
-		}
-	}
-	class Song {
-
-		private int duration;
-		private String songAddress;
-		private AdvancedPlayer mp3Player;
-		private InputStream songStream;
-
-		/**
-		 * Songs can be constructed from files on your computer or Internet
-		 * addresses.
-		 * 
-		 * Examples: <code> 
-		 * 		new Song("everywhere.mp3"); 	//from default package 
-		 * 		new Song("/Users/joonspoon/music/Vampire Weekend - Modern Vampires of the City/03 Step.mp3"); 
-		 * 		new	Song("http://freedownloads.last.fm/download/569264057/Get%2BGot.mp3"); 
-		 * </code>
-		 */
-		public Song(String songAddress) {
-			this.songAddress = songAddress;
-		}
-
-		public void play() {
-			loadFile();
-			if (songStream != null) {
-				loadPlayer();
-				startSong();
-			} else
-				System.err.println("Unable to load file: " + songAddress);
-		}
-
-		public void setDuration(int seconds) {
-			this.duration = seconds * 100;
-		}
-
-		public void stop() {
-			if (mp3Player != null)
-				mp3Player.close();
-		}
-
-		private void startSong() {
-			Thread t = new Thread() {
-				public void run() {
-					try {
-						if (duration > 0)
-							mp3Player.play(duration);
-						else
-							mp3Player.play();
-					} catch (Exception e) {
-					}
-				}
-			};
-			t.start();
-		}
-
-		private void loadPlayer() {
-			try {
-				this.mp3Player = new AdvancedPlayer(songStream);
-			} catch (Exception e) {
-			}
-		}
-
-		private void loadFile() {
-			if (songAddress.contains("http"))
-				this.songStream = loadStreamFromInternet();
-			else
-				this.songStream = loadStreamFromComputer();
-		}
-
-		private InputStream loadStreamFromInternet() {
-			try {
-				return new URL(songAddress).openStream();
-			} catch (Exception e) {
-				return null;
-			}
-		}
-
-		private InputStream loadStreamFromComputer() {
-			try {
-				return new FileInputStream(songAddress);
-			} catch (FileNotFoundException e) {
-				return this.getClass().getResourceAsStream(songAddress);
 			}
 		}
 	}

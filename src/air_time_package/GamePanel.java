@@ -75,13 +75,26 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		} else {
 			manager.gamersong.stop();
 		}
+		
 		if(currentState==MENU_STATE) {
 			manager.main.play();
 		} else {
 			manager.main.stop();
 		}
+		
+		if(currentState==END_STATE) {
+			manager.over.play();
+		} else {
+			manager.over.stop();
+		}
+		if(currentState==WIN_STATE) {
+			manager.winner.play();
+		} else {
+			manager.winner.stop();
+		}
 	}
 	void updateMenuState() {
+		
 	}
 
 	void updateGameState() {
@@ -92,10 +105,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		manager.keepTime();
 		if(!manager.mantis.isAlive) {
 			currentState=END_STATE;
-			manager.gamersong.stop();
+			songPlay();
 		} else if(!manager.mantis.isAlive && manager.hours==0) {
-			currentState=WIN_STATE;
 			manager.gamersong.stop();
+			manager.winner.play();
+			currentState=WIN_STATE;
 		}
 	}
 	void updateEndState() {
@@ -141,10 +155,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		g.setColor(Color.BLACK);
 		g.drawRect(0, 400, 100, 99);
 		g.setColor(Color.RED);
-		g.drawString("Projectiles: "+manager.projectileCounter, 320, 20);
+		g.drawString("Projectiles: "+manager.projectileCounter, 340, 20);
 		g.setFont(counterFont);
 		g.setColor(Color.RED);
-		g.drawString("Hours from Canada: "+manager.hours, 110, 20);
+		g.drawString("Hours from destination: "+manager.hours, 110, 20);
 		g.setFont(hourFont);
 		manager.draw(g);
 	}
@@ -206,11 +220,14 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 				songPlay();
 				manager.hours=6;
 			} else if (currentState == END_STATE) {
+				currentState = MENU_STATE;
+				songPlay();
 				manager = new ObjectManager(new Plane(25, 225, 50, 50));
-				currentState = MENU_STATE;
 			} else if (currentState == WIN_STATE) {
-				manager = new ObjectManager(new Plane(25,225,50,50));
 				currentState = MENU_STATE;
+				songPlay();
+				manager = new ObjectManager(new Plane(25,225,50,50));
+
 			}
 		} else if (e.getKeyCode() == (KeyEvent.VK_UP)) {
 			if (manager.mantis.y == 25) {
@@ -241,6 +258,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 				if(manager.projectileCounter>0) {
 					manager.addProjectile(new Projectile(manager.mantis.x + 21, manager.mantis.y +10, 25, 25));
 					manager.projectileCounter--;
+					if(manager.hours>2) {
+					manager.fire.play();
+					} else {
+						manager.firefire.play();
+					}
 				}
 			}
 		}
@@ -269,7 +291,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		} else if (currentState == GAME_STATE) {
 			updateGameState();
 			if(manager.hours==0) {
-			currentState=WIN_STATE;
+				currentState = WIN_STATE;
+				manager.gamersong.stop();
+				manager.winner.play();
 			}
 		} else if (currentState == END_STATE) {
 			updateEndState();
@@ -279,6 +303,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 			updateWinState();
 		}
 		repaint();
+		
 	}
 
 	@Override
