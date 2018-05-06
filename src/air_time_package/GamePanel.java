@@ -106,7 +106,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		if(!manager.mantis.isAlive) {
 			currentState=END_STATE;
 			songPlay();
-		} else if(!manager.mantis.isAlive && manager.hours==0) {
+		} else if(!manager.mantis.isAlive && !manager.endless && manager.hours==0) {
 			manager.gamersong.stop();
 			manager.winner.play();
 			currentState=WIN_STATE;
@@ -158,7 +158,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		g.drawString("Projectiles: "+manager.projectileCounter, 340, 20);
 		g.setFont(counterFont);
 		g.setColor(Color.RED);
+		if(!manager.endless) {
 		g.drawString("Hours from destination: "+manager.hours, 110, 20);
+		} else {
+			g.drawString("Hours survived: "+manager.hours, 110,20);
+		}
 		g.setFont(hourFont);
 		manager.draw(g);
 	}
@@ -176,7 +180,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		g.drawString("Press ENTER to restart.", 350, 400);
 		g.setFont(awayFont);
 		g.setColor(Color.BLACK);
+		if(!manager.endless) {
 		g.drawString("You were "+manager.hours+" hours away from Canada.", 200, 250);
+		} else {
+			g.drawString("You survived for "+manager.hours+" hours.", 200, 250);
+		}
 	}
 	void drawInstructionState(Graphics g) {
 		g.setColor(manual);
@@ -265,7 +273,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 					}
 				}
 			}
-		}
+		} 
 		if(currentState==MENU_STATE) {
 			if(e.getKeyCode() == (KeyEvent.VK_SPACE)) {
 				currentState=INSTRUCTION_STATE;
@@ -273,6 +281,16 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		} else if(currentState==INSTRUCTION_STATE) {
 			if(e.getKeyCode() == (KeyEvent.VK_SPACE)) {
 				currentState=MENU_STATE;
+			}
+		}
+		
+		if(e.getKeyCode()==(KeyEvent.VK_0)) {
+			System.out.println("yes");
+			if(currentState==MENU_STATE) {
+			manager.endless = true;
+			manager.hours = 0;
+			currentState = GAME_STATE;
+			songPlay();
 			}
 		}
 	}

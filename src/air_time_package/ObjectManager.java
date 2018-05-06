@@ -9,6 +9,7 @@ public class ObjectManager {
 	ArrayList<Zombie> zombo = new ArrayList<Zombie>();
 	ArrayList<PowerUp> power = new ArrayList<PowerUp>();
 	ArrayList<Projectile> project = new ArrayList<Projectile>();
+	boolean endless = false;
 	static int hours;
 	long enemyTimer = 0;
 	int enemySpawnTime = 2000;
@@ -96,10 +97,18 @@ public class ObjectManager {
 		}
 	}
 	void keepTime() {
+		if(!endless) {
 		if(System.currentTimeMillis() - hourTimer >= 23000) {
 			System.out.println("YAY!");
 			hourTimer = System.currentTimeMillis();
 			hours--;
+		}
+		} else {
+			if(System.currentTimeMillis() - hourTimer >= 23000) {
+				System.out.println("YAY!");
+				hourTimer = System.currentTimeMillis();
+				hours++;
+		}
 		}
 	}
 
