@@ -248,7 +248,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 				manager.endless = false;
 				currentState = GAME_STATE;
 				songPlay();
-				manager.hours = 1;
+				manager.hours = 6;
 			} else if (currentState == END_STATE) {
 				currentState = MENU_STATE;
 				songPlay();
