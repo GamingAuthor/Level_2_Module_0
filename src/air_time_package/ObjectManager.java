@@ -9,7 +9,7 @@ public class ObjectManager {
 	ArrayList<Zombie> zombo = new ArrayList<Zombie>();
 	ArrayList<PowerUp> power = new ArrayList<PowerUp>();
 	ArrayList<Projectile> project = new ArrayList<Projectile>();
-	boolean endless = false;
+	static boolean endless = false;
 	static int hours;
 	long enemyTimer = 0;
 	int enemySpawnTime = 2000;
@@ -17,6 +17,7 @@ public class ObjectManager {
 	int powerSpawnTime = 10000;
 	long hourTimer = 0;
 	int projectileCounter = 0;
+	int score = 0;
 	static Song gamersong = new Song("UltimateBattle.mp3");
 	static Song subaluwa = new Song("Subaluwa.mp3");
 	static Song oneup = new Song("1up.mp3");
@@ -70,45 +71,58 @@ public class ObjectManager {
 	}
 
 	public void manageEnemies() {
-		if(hours == 5) {
-			enemySpawnTime = 2000;
-		} else if (hours == 4) {
-			enemySpawnTime = 1000;
-		} else if(hours == 2) {
-			enemySpawnTime = 500;
-			powerSpawnTime = 7500;
-		} else if(hours == 1) {
+		if (!endless) {
+			if (hours == 5) {
+				enemySpawnTime = 2000;
+			} else if (hours == 4) {
+				enemySpawnTime = 1000;
+			} else if (hours == 2) {
+				enemySpawnTime = 500;
+				powerSpawnTime = 7500;
+			} else if (hours == 1) {
+				enemySpawnTime = 250;
+			}
+		} else {
 			enemySpawnTime = 250;
 		}
-		
+
 		if (System.currentTimeMillis() - enemyTimer >= enemySpawnTime) {
 			addZombie(new Zombie(800, (new Random().nextInt(5) * 100) + 32, 50, 25));
 			enemyTimer = System.currentTimeMillis();
 		}
-		if(hours<5) {
-		if (System.currentTimeMillis() - powerTimer >= powerSpawnTime) {
-			if(hours>2) {
-			addPowerUp(new PowerUp(800, (new Random().nextInt(5) * 100) + 25, 50, 50));
-			} else if(hours<=2) {
-			addPowerUp(new PowerUp(800, (new Random().nextInt(5) * 100) + 25, 35, 50));
+		if (!endless) {
+			if (hours < 5) {
+				if (System.currentTimeMillis() - powerTimer >= powerSpawnTime) {
+					if (hours > 2) {
+						addPowerUp(new PowerUp(800, (new Random().nextInt(5) * 100) + 25, 50, 50));
+					} else if (hours <= 2) {
+						addPowerUp(new PowerUp(800, (new Random().nextInt(5) * 100) + 25, 35, 50));
+					}
+					powerTimer = System.currentTimeMillis();
+				}
 			}
-			powerTimer = System.currentTimeMillis();
-		}
-		}
-	}
-	void keepTime() {
-		if(!endless) {
-		if(System.currentTimeMillis() - hourTimer >= 23000) {
-			System.out.println("YAY!");
-			hourTimer = System.currentTimeMillis();
-			hours--;
-		}
 		} else {
-			if(System.currentTimeMillis() - hourTimer >= 23000) {
+			if (System.currentTimeMillis() - powerTimer >= powerSpawnTime) {
+				addPowerUp(new PowerUp(800, (new Random().nextInt(5) * 100) + 25, 35, 50));
+				powerTimer = System.currentTimeMillis();
+			}
+		}
+
+	}
+
+	void keepTime() {
+		if (!endless) {
+			if (System.currentTimeMillis() - hourTimer >= 23000) {
+				System.out.println("YAY!");
+				hourTimer = System.currentTimeMillis();
+				hours--;
+			}
+		} else {
+			if (System.currentTimeMillis() - hourTimer >= 23000) {
 				System.out.println("YAY!");
 				hourTimer = System.currentTimeMillis();
 				hours++;
-		}
+			}
 		}
 	}
 
@@ -123,11 +137,11 @@ public class ObjectManager {
 				power.remove(n);
 			}
 		}
-		for(int m = 0; m < project.size(); m++) {
-			if(!project.get(m).isAlive) {
+		for (int m = 0; m < project.size(); m++) {
+			if (!project.get(m).isAlive) {
 				project.remove(m);
 			}
-		}//MAKE JALAPENO BULLET
+		} // MAKE JALAPENO BULLET
 	}
 
 	void checkCollision() {
@@ -137,21 +151,30 @@ public class ObjectManager {
 			} else {
 				for (Projectile alia : project) {
 					if (alia.collisionBox.intersects(bill.collisionBox)) {
-						if(hours>2) {
-						alia.isAlive = false;
+						if (!endless) {
+							if (hours > 2) {
+								alia.isAlive = false;
+							}
+						} else {
+
 						}
 						bill.isAlive = false;
 						hit.play();
+						score++;
 					}
 				}
 			}
 		}
 		for (PowerUp yeet : power) {
 			if (mantis.collisionBox.intersects(yeet.collisionBox)) {
-				if(hours<=2) {
-				subaluwa.play();
+				if (!ObjectManager.endless) {
+					if (hours <= 2) {
+						subaluwa.play();
+					} else {
+						oneup.play();
+					}
 				} else {
-				oneup.play();
+					subaluwa.play();
 				}
 				yeet.isAlive = false;
 				projectileCounter++;

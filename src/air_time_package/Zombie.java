@@ -11,13 +11,17 @@ public class Zombie extends GameObject {
 
 	void update() {
 		super.update();
-		if (ObjectManager.hours > 2) {
-			x-=2;
-		}
-		if (ObjectManager.hours == 2) {
-			x -= 3;
-		}
-		if (ObjectManager.hours == 1) {
+		if (!ObjectManager.endless) {
+			if (ObjectManager.hours > 3) {
+				x -= 2;
+			}
+			if (ObjectManager.hours <= 3) {
+				x -= 3;
+			}
+			if (ObjectManager.hours == 1) {
+				x -= 1;
+			}
+		} else {
 			x -= 4;
 		}
 		if (x < -50) {
