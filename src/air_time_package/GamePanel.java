@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -92,7 +93,15 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 			manager.winner.stop();
 		}
 	}
-
+	void endlessSong() {
+		manager.main.stop();
+		if(manager.endless) {
+		if (System.currentTimeMillis() - manager.songTimer >= manager.songPlayTime) {
+			manager.gamersong.play();
+			manager.songTimer = System.currentTimeMillis();
+		}
+		}
+	}
 	void updateMenuState() {
 
 	}
@@ -110,6 +119,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 			manager.gamersong.stop();
 			manager.winner.play();
 			currentState = WIN_STATE;
+		}
+		if(manager.endless) {
+			endlessSong();
 		}
 	}
 
@@ -198,6 +210,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 			g.drawString("You were " + manager.hours + " hours away from your destination.", 180, 250);
 		} else {
 			g.drawString("You survived for " + (manager.hours - 1) + " hours.", 220, 250);
+			
 		}
 	}
 
@@ -206,8 +219,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		g.fillRect(0, 0, AirTime.width, AirTime.height);
 		g.setFont(controlFont);
 		g.setColor(Color.RED);
-		g.drawString("Use the UP and DOWN arrow keys to navigate the lanes.", 85, 50);
-		g.drawString("Press SPACE to shoot projectiles when you have them.", 85, 75);
+		g.drawString("Use the UP and DOWN arrow keys to navigate the lanes.", 85, 25);
+		g.drawString("Press SPACE to shoot projectiles when you have them.", 85, 55);
 		g.drawImage(zombieImg, 1, 75, null);
 		g.drawString("Avoid the zombies!", 150, 175);
 		g.drawImage(powerupImg, 45, 175, null);
@@ -317,7 +330,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 					manager.endless = true;
 					manager.hours = 0;
 					currentState = GAME_STATE;
-					songPlay();
+					endlessSong();
 				}
 			}
 		}

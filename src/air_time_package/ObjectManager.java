@@ -18,6 +18,8 @@ public class ObjectManager {
 	long hourTimer = 0;
 	int projectileCounter = 0;
 	int score = 0;
+	long songTimer = 0;
+	int songPlayTime = 116000;
 	static Song gamersong = new Song("UltimateBattle.mp3");
 	static Song subaluwa = new Song("Subaluwa.mp3");
 	static Song oneup = new Song("1up.mp3");
